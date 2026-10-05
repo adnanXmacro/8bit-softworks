@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin · 8BiT Softworks</title>
+    <meta name="robots" content="noindex">
+    <link rel="stylesheet" href="../css/store.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="logo" href="../">8B</a>
+      <a class="brand" href="../">8BiT Softworks</a>
+    </header>
+    <main class="wrap">
+      <section id="gate" class="gate">
+        <h2>Admin</h2>
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password">
+        <p>
+          <button class="btn" id="unlock" type="button">Unlock</button>
+        </p>
+        <p id="gate-status" class="status"></p>
+      </section>
+      <section id="editor" class="editor hidden">
+        <h2>Listings</h2>
+        <p>Paste a repo-scoped GitHub token for this tab only. It is not saved.</p>
+        <label for="token">GitHub token</label>
+        <input id="token" type="password" autocomplete="off">
+        <div id="apps-form"></div>
+        <p>
+          <button class="btn" id="add-app" type="button">Add app</button>
+          <button class="btn" id="save" type="button">Save</button>
+        </p>
+        <p id="save-status" class="status"></p>
+      </section>
+    </main>
+    <script type="module">
+      import { loadApps } from '../js/store.js';
+      import { unlockAdmin, saveApps, tokenStorage, emptyApp, loadRemoteApps } from '../js/admin.js';
+
+      const gate = document.getElementById('gate');
+      const editor = document.getElementById('editor');
+      const appsForm = document.getElementById('apps-form');
+      const gateStatus = document.getElementById('gate-status');
+      const saveStatus = document.getElementById('save-status');
+      let apps = [];
+      let sha = '';
+
+      function field(label, name, value, multiline) {
+        const id = `${name}-${Math.random().toString(16).slice(2)}`;
+        if (multiline) {
+          return `<label for="${id}">${label}</label><textarea id="${id}" data-field="${name}">${value || ''}</textarea>`;
+        }
+        return `<label for="${id}">${label}</label><input id="${id}" data-field="${name}" value="${(value || '').replace(/"/g, '&quot;')}">`;
+      }
+
+      function renderForms() {
+        appsForm.innerHTML = apps
+          .map(
+            (app, index) => `<fieldset class="app-fields" data-index="${index}">
+              ${field('Name', 'name', app.name)}
+              ${field('Slug', 'slug', app.slug)}
+              ${field('Developer', 'developer', app.developer)}
+              ${field('Blurb', 'blurb', app.blurb)}
+              ${field('Description', 'description', app.description, true)}
+              ${field('Icon URL', 'iconUrl', app.iconUrl)}
+              ${field('APK URL', 'apkUrl', app.apkUrl)}
+              ${field('Version', 'version', app.version)}
+              ${field('Size', 'size', app.size)}
+              ${field('Screenshot URLs (one per line)', 'screenshots', (app.screenshots || []).join('\n'), true)}
+            </fieldset>`
+          )
+          .join('');
+      }
+
+      function readForms() {
+        return [...appsForm.querySelectorAll('.app-fields')].map((box) => {
+          const get = (name) => box.querySelector(`[data-field="${name}"]`).value.trim();
+          return {
+            slug: get('slug'),
+            name: get('name'),
+            developer: get('developer'),
+            blurb: get('blurb'),
+            description: get('description'),
+            iconUrl: get('iconUrl'),
+            apkUrl: get('apkUrl'),
+            version: get('version'),
+            size: get('size'),
+            screenshots: get('screenshots')
+              .split('\n')
+              .map((s) => s.trim())
+              .filter(Boolean)
+          };
+        });
+      }
+
+      document.getElementById('unlock').addEventListener('click', async () => {
+        const result = unlockAdmin(document.getElementById('password').value);
+        if (!result.unlocked) {
+          gateStatus.textContent = 'Wrong password';
+          gateStatus.classList.add('error');
+          return;
+        }
+        gate.classList.add('hidden');
+        editor.classList.remove('hidden');
+        const local = await loadApps(fetch, '../apps.json');
+        apps = local.ok ? local.apps : [];
+        const remote = await loadRemoteApps({ token: '' });
+        if (remote.ok) {
+          apps = remote.apps;
+          sha = remote.sha;
+        }
+        renderForms();
+      });
+
+      document.getElementById('add-app').addEventListener('click', () => {
+        apps = readForms();
+        apps.push(emptyApp());
+        renderForms();
+      });
+
+      document.getElementById('save').addEventListener('click', async () => {
+        const token = document.getElementById('token').value.trim();
+        tokenStorage.setToken(token);
+        tokenStorage.persistTo(window.localStorage);
+        apps = readForms();
+        const result = await saveApps({ token: tokenStorage.getToken(), apps, sha });
+        saveStatus.textContent = result.message || (result.ok ? 'Saved' : 'Could not save');
+        saveStatus.classList.toggle('error', !result.ok);
+        if (result.ok && result.sha) sha = result.sha;
+      });
+    </script>
+  </body>
+</html>

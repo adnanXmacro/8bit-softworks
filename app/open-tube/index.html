@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Open Tube by 8BiT Softworks</title>
+    <meta name="description" content="Open Tube by 8BiT Softworks. Download the Android APK from GitHub Releases.">
+    <link rel="stylesheet" href="../../css/store.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="logo" href="../../" aria-hidden="true">8B</a>
+      <a class="brand" href="../../">8BiT Softworks</a>
+    </header>
+    <main class="wrap" id="app"></main>
+    <footer class="footer">8BiT Softworks · Android apps</footer>
+    <script type="module">
+      import { mountAppPage, slugFromPath } from '../../js/store.js';
+      mountAppPage(document.getElementById('app'), slugFromPath(location.pathname) || 'open-tube');
+    </script>
+  </body>
+</html>

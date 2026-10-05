@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>8BiT Softworks</title>
+    <meta name="description" content="Android apps by 8BiT Softworks. Download Quiz Chaos and Open Tube.">
+    <link rel="stylesheet" href="css/store.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo" aria-hidden="true">8B</div>
+      <p class="brand">8BiT Softworks</p>
+    </header>
+    <main class="wrap">
+      <section class="hero">
+        <h2>Apps</h2>
+        <p>Install from GitHub. No Play Store account required.</p>
+      </section>
+      <div id="catalog"></div>
+    </main>
+    <footer class="footer">8BiT Softworks · Android apps</footer>
+    <script type="module">
+      import { mountCatalog } from './js/store.js';
+      mountCatalog(document.getElementById('catalog'));
+    </script>
+  </body>
+</html>
