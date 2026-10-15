@@ -3,26 +3,54 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>8BiT Softworks</title>
-    <meta name="description" content="Android apps by 8BiT Softworks. Download Quiz Chaos and Open Tube.">
+    <title>8BiT Softworks — Android apps</title>
+    <meta name="description" content="Android apps by 8BiT Softworks. Download Quiz Chaos and Open Tube straight from GitHub. No Play Store account required.">
+    <meta name="theme-color" content="#08080a">
+    <meta property="og:title" content="8BiT Softworks — Android apps">
+    <meta property="og:description" content="Download Quiz Chaos and Open Tube from GitHub. No Play Store account required.">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="css/store.css">
   </head>
   <body>
     <header class="site-header">
-      <div class="logo" aria-hidden="true">8B</div>
-      <p class="brand">8BiT Softworks</p>
+      <a class="brand-lockup" href="./" aria-label="8BiT Softworks home">
+        <svg class="brand-mark" viewBox="0 0 64 64" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ff5566"/>
+              <stop offset="0.5" stop-color="#e11d2a"/>
+              <stop offset="1" stop-color="#a80e1c"/>
+            </linearGradient>
+          </defs>
+          <rect width="64" height="64" rx="15" fill="#0a0a0c"/>
+          <rect x="2" y="2" width="60" height="60" rx="13.5" fill="none" stroke="url(#brand)" stroke-width="2.5"/>
+          <text x="32" y="31" font-family="Arial, sans-serif" font-size="27" font-weight="800" fill="#f4f4f6" text-anchor="middle">8</text>
+          <text x="32" y="55" font-family="Arial, sans-serif" font-size="22" font-weight="800" fill="url(#brand)" text-anchor="middle">B</text>
+          <circle cx="53" cy="11" r="2.5" fill="#ff5566"/>
+        </svg>
+        <span class="brand-text">
+          <span class="brand">8BiT Softworks</span>
+          <span class="brand-sub">Android studio</span>
+        </span>
+      </a>
+      <span class="header-spacer"></span>
+      <a class="header-link" href="#apps">Apps</a>
     </header>
     <main class="wrap">
-      <section class="hero">
-        <h2>Apps</h2>
-        <p>Install from GitHub. No Play Store account required.</p>
+      <section class="page-intro">
+        <p class="eyebrow">App catalog</p>
+        <h1 class="page-title">Apps</h1>
+        <p class="page-sub">Independent Android apps built by 8BiT Softworks. Install straight from GitHub — no Play Store account required.</p>
       </section>
-      <div id="catalog"></div>
+      <div id="apps" data-store></div>
     </main>
-    <footer class="footer">8BiT Softworks · Android apps</footer>
+    <footer class="footer">
+      <strong>8BiT Softworks</strong><span class="dot">•</span>Independent Android apps<span class="dot">•</span>Install from GitHub
+    </footer>
     <script type="module">
       import { mountCatalog } from './js/store.js';
-      mountCatalog(document.getElementById('catalog'));
+      mountCatalog(document.querySelector('[data-store]'));
     </script>
   </body>
 </html>

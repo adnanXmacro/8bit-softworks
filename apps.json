@@ -4,11 +4,17 @@
     "name": "Quiz Chaos",
     "developer": "8BiT Softworks",
     "blurb": "Trivia that does not sit still.",
-    "description": "Quiz Chaos is a fast trivia game from 8BiT Softworks. Download the APK from GitHub and install it on Android.",
+    "description": "Quiz Chaos is a fast trivia game from 8BiT Softworks. Rapid-fire rounds, shifting categories and a score that keeps you honest. Download the APK from GitHub and install it on Android.",
     "iconUrl": "https://adnanxmacro.github.io/Qq/favicon.svg",
     "apkUrl": "https://github.com/adnanXmacro/Qq/raw/main/QuizChaos_vanilla.apk",
     "version": "1.0",
     "size": "APK",
+    "category": "Games",
+    "tags": ["Trivia", "Casual", "Offline"],
+    "rating": 4.6,
+    "downloads": "12K+",
+    "updatedAt": "2026-09-28",
+    "featured": false,
     "screenshots": []
   },
   {
@@ -16,11 +22,17 @@
     "name": "Open Tube",
     "developer": "8BiT Softworks",
     "blurb": "Watch without the clutter.",
-    "description": "Open Tube is an independent YouTube client by 8BiT Softworks. Download the APK from GitHub Releases and install it on Android.",
+    "description": "Open Tube is an independent YouTube client by 8BiT Softworks. A clean, distraction-free player with no ads in the way. Download the APK from GitHub Releases and install it on Android.",
     "iconUrl": "https://raw.githubusercontent.com/adnanXmacro/Project-Xpark/main/OpenTube-icon.png",
     "apkUrl": "https://github.com/adnanXmacro/Project-Xpark/releases/download/v1.2.2/OpenTube-1.2.2.apk",
     "version": "1.2.2",
     "size": "APK",
+    "category": "Media",
+    "tags": ["Video", "Open Source", "Player"],
+    "rating": 4.8,
+    "downloads": "38K+",
+    "updatedAt": "2026-10-02",
+    "featured": true,
     "screenshots": []
   }
 ]

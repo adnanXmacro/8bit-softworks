@@ -104,6 +104,12 @@ export function emptyApp() {
     apkUrl: '',
     version: '',
     size: '',
+    category: '',
+    tags: [],
+    rating: '',
+    downloads: '',
+    updatedAt: '',
+    featured: false,
     screenshots: ['']
   };
 }

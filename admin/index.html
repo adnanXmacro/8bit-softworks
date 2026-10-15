@@ -3,18 +3,47 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin · 8BiT Softworks</title>
+    <title>Admin — 8BiT Softworks</title>
     <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#08080a">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <link rel="stylesheet" href="../css/store.css">
   </head>
   <body>
     <header class="site-header">
-      <a class="logo" href="../">8B</a>
-      <a class="brand" href="../">8BiT Softworks</a>
+      <a class="brand-lockup" href="../" aria-label="8BiT Softworks home">
+        <svg class="brand-mark" viewBox="0 0 64 64" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ff5566"/>
+              <stop offset="0.5" stop-color="#e11d2a"/>
+              <stop offset="1" stop-color="#a80e1c"/>
+            </linearGradient>
+          </defs>
+          <rect width="64" height="64" rx="15" fill="#0a0a0c"/>
+          <rect x="2" y="2" width="60" height="60" rx="13.5" fill="none" stroke="url(#brand)" stroke-width="2.5"/>
+          <text x="32" y="31" font-family="Arial, sans-serif" font-size="27" font-weight="800" fill="#f4f4f6" text-anchor="middle">8</text>
+          <text x="32" y="55" font-family="Arial, sans-serif" font-size="22" font-weight="800" fill="url(#brand)" text-anchor="middle">B</text>
+          <circle cx="53" cy="11" r="2.5" fill="#ff5566"/>
+        </svg>
+        <span class="brand-text">
+          <span class="brand">8BiT Softworks</span>
+          <span class="brand-sub">Admin</span>
+        </span>
+      </a>
+      <span class="header-spacer"></span>
+      <a class="header-link" href="../">Back to store</a>
     </header>
     <main class="wrap">
+      <section class="page-intro">
+        <p class="eyebrow">Control room</p>
+        <h1 class="page-title">Admin</h1>
+        <p class="page-sub">Edit the store catalog. Changes are committed to <code>apps.json</code> through the GitHub API.</p>
+      </section>
+
       <section id="gate" class="gate">
-        <h2>Admin</h2>
+        <h2>Sign in</h2>
+        <p class="muted">The password unhides the editor in this tab. It is not real authentication.</p>
         <label for="password">Password</label>
         <input id="password" type="password" autocomplete="current-password">
         <p>
@@ -22,16 +51,17 @@
         </p>
         <p id="gate-status" class="status"></p>
       </section>
+
       <section id="editor" class="editor hidden">
         <h2>Listings</h2>
-        <p>Paste a repo-scoped GitHub token for this tab only. It is not saved.</p>
+        <p class="muted">Paste a repo-scoped GitHub token for this tab only. It is not saved anywhere.</p>
         <label for="token">GitHub token</label>
         <input id="token" type="password" autocomplete="off">
         <div id="apps-form"></div>
-        <p>
-          <button class="btn" id="add-app" type="button">Add app</button>
-          <button class="btn" id="save" type="button">Save</button>
-        </p>
+        <div class="toolbar-actions">
+          <button class="btn ghost" id="add-app" type="button">Add app</button>
+          <button class="btn" id="save" type="button">Save changes</button>
+        </div>
         <p id="save-status" class="status"></p>
       </section>
     </main>
@@ -59,16 +89,25 @@
         appsForm.innerHTML = apps
           .map(
             (app, index) => `<fieldset class="app-fields" data-index="${index}">
-              ${field('Name', 'name', app.name)}
-              ${field('Slug', 'slug', app.slug)}
-              ${field('Developer', 'developer', app.developer)}
-              ${field('Blurb', 'blurb', app.blurb)}
-              ${field('Description', 'description', app.description, true)}
-              ${field('Icon URL', 'iconUrl', app.iconUrl)}
-              ${field('APK URL', 'apkUrl', app.apkUrl)}
-              ${field('Version', 'version', app.version)}
-              ${field('Size', 'size', app.size)}
-              ${field('Screenshot URLs (one per line)', 'screenshots', (app.screenshots || []).join('\n'), true)}
+              <p class="fieldset-title">Listing ${index + 1}</p>
+              <div class="field-grid">
+                <div class="span-2">${field('Name', 'name', app.name)}</div>
+                <div>${field('Slug', 'slug', app.slug)}</div>
+                <div>${field('Developer', 'developer', app.developer)}</div>
+                <div class="span-2">${field('Blurb', 'blurb', app.blurb)}</div>
+                <div class="span-2">${field('Description', 'description', app.description, true)}</div>
+                <div class="span-2">${field('Icon URL', 'iconUrl', app.iconUrl)}</div>
+                <div class="span-2">${field('APK URL', 'apkUrl', app.apkUrl)}</div>
+                <div>${field('Version', 'version', app.version)}</div>
+                <div>${field('Size', 'size', app.size)}</div>
+                <div>${field('Category', 'category', app.category)}</div>
+                <div>${field('Rating (0-5)', 'rating', app.rating)}</div>
+                <div>${field('Downloads', 'downloads', app.downloads)}</div>
+                <div>${field('Last updated (YYYY-MM-DD)', 'updatedAt', app.updatedAt)}</div>
+                <div class="span-2">${field('Tags (comma separated)', 'tags', (app.tags || []).join(', '))}</div>
+                <div class="span-2">${field('Screenshot URLs (one per line)', 'screenshots', (app.screenshots || []).join('\n'), true)}</div>
+              </div>
+              <label class="checkbox-row"><input type="checkbox" data-field="featured" ${app.featured ? 'checked' : ''}> Feature this app on the home page</label>
             </fieldset>`
           )
           .join('');
@@ -77,6 +116,7 @@
       function readForms() {
         return [...appsForm.querySelectorAll('.app-fields')].map((box) => {
           const get = (name) => box.querySelector(`[data-field="${name}"]`).value.trim();
+          const ratingValue = get('rating');
           return {
             slug: get('slug'),
             name: get('name'),
@@ -87,6 +127,15 @@
             apkUrl: get('apkUrl'),
             version: get('version'),
             size: get('size'),
+            category: get('category'),
+            tags: get('tags')
+              .split(',')
+              .map((t) => t.trim())
+              .filter(Boolean),
+            rating: ratingValue ? Number(ratingValue) : '',
+            downloads: get('downloads'),
+            updatedAt: get('updatedAt'),
+            featured: box.querySelector('[data-field="featured"]').checked,
             screenshots: get('screenshots')
               .split('\n')
               .map((s) => s.trim())

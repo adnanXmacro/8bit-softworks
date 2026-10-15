@@ -3,16 +3,46 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Not found · 8BiT Softworks</title>
+    <title>Not found — 8BiT Softworks</title>
+    <meta name="theme-color" content="#08080a">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="css/store.css">
   </head>
   <body>
     <header class="site-header">
-      <a class="logo" href="./">8B</a>
-      <a class="brand" href="./">8BiT Softworks</a>
+      <a class="brand-lockup" href="./" aria-label="8BiT Softworks home">
+        <svg class="brand-mark" viewBox="0 0 64 64" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ff5566"/>
+              <stop offset="0.5" stop-color="#e11d2a"/>
+              <stop offset="1" stop-color="#a80e1c"/>
+            </linearGradient>
+          </defs>
+          <rect width="64" height="64" rx="15" fill="#0a0a0c"/>
+          <rect x="2" y="2" width="60" height="60" rx="13.5" fill="none" stroke="url(#brand)" stroke-width="2.5"/>
+          <text x="32" y="31" font-family="Arial, sans-serif" font-size="27" font-weight="800" fill="#f4f4f6" text-anchor="middle">8</text>
+          <text x="32" y="55" font-family="Arial, sans-serif" font-size="22" font-weight="800" fill="url(#brand)" text-anchor="middle">B</text>
+          <circle cx="53" cy="11" r="2.5" fill="#ff5566"/>
+        </svg>
+        <span class="brand-text">
+          <span class="brand">8BiT Softworks</span>
+          <span class="brand-sub">Android studio</span>
+        </span>
+      </a>
+      <span class="header-spacer"></span>
+      <a class="header-link" href="./">Store</a>
     </header>
     <main class="wrap">
-      <p class="empty">Page not found. <a href="./">Back to the store</a>.</p>
+      <div class="notfound">
+        <p class="code">404</p>
+        <h1>Page not found</h1>
+        <p>The page you were looking for does not exist or has moved.</p>
+        <a class="btn" href="./">Back to the store</a>
+      </div>
     </main>
+    <footer class="footer">
+      <strong>8BiT Softworks</strong><span class="dot">•</span>Independent Android apps
+    </footer>
   </body>
 </html>

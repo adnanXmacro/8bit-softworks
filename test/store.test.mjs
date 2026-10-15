@@ -3,7 +3,16 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadApps, findAppBySlug, renderCatalog, renderAppPage } from '../js/store.js';
+import {
+  loadApps,
+  findAppBySlug,
+  renderCatalog,
+  renderAppPage,
+  collectCategories,
+  filterApps,
+  renderFeatured,
+  renderStore
+} from '../js/store.js';
 
 const sampleApps = [
   {
@@ -16,6 +25,12 @@ const sampleApps = [
     apkUrl: 'https://github.com/adnanXmacro/Qq/raw/main/QuizChaos_vanilla.apk',
     version: '1.0',
     size: '12 MB',
+    category: 'Games',
+    tags: ['Trivia', 'Casual'],
+    rating: 4.6,
+    downloads: '12K+',
+    updatedAt: '2026-09-28',
+    featured: false,
     screenshots: ['https://example.com/qc-1.png']
   },
   {
@@ -28,6 +43,12 @@ const sampleApps = [
     apkUrl: 'https://github.com/adnanXmacro/Project-Xpark/releases/download/v1.2.2/OpenTube-1.2.2.apk',
     version: '1.2.2',
     size: '8 MB',
+    category: 'Media',
+    tags: ['Video', 'Open Source'],
+    rating: 4.8,
+    downloads: '38K+',
+    updatedAt: '2026-10-02',
+    featured: true,
     screenshots: ['https://example.com/ot-1.png']
   }
 ];
@@ -125,3 +146,64 @@ test('seed apps.json lists Quiz Chaos and Open Tube with GitHub APK URLs', () =>
   assert.equal(qc.developer, '8BiT Softworks');
   assert.equal(ot.developer, '8BiT Softworks');
 });
+
+test('seed apps.json exposes the extended catalog fields', () => {
+  const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+  const apps = JSON.parse(readFileSync(join(root, 'apps.json'), 'utf8'));
+  const ot = apps.find((a) => a.slug === 'open-tube');
+  assert.equal(ot.category, 'Media');
+  assert.equal(ot.featured, true);
+  assert.equal(typeof ot.rating, 'number');
+  assert.ok(ot.downloads);
+  assert.match(ot.updatedAt, /^\d{4}-\d{2}-\d{2}$/);
+});
+
+test('collectCategories returns unique categories in order', () => {
+  assert.deepEqual(collectCategories(sampleApps), ['Games', 'Media']);
+  assert.deepEqual(collectCategories([]), []);
+});
+
+test('filterApps matches by query across name, tags and category', () => {
+  assert.equal(filterApps(sampleApps, { query: 'trivia' }).length, 1);
+  assert.equal(filterApps(sampleApps, { query: 'open tube' }).length, 1);
+  assert.equal(filterApps(sampleApps, { query: 'youtube' }).length, 1);
+  assert.equal(filterApps(sampleApps, { query: 'zzz' }).length, 0);
+});
+
+test('filterApps filters by category', () => {
+  assert.equal(filterApps(sampleApps, { category: 'Games' })[0].slug, 'quiz-chaos');
+  assert.equal(filterApps(sampleApps, { category: 'All' }).length, 2);
+});
+
+test('renderFeatured highlights the chosen app', () => {
+  const html = renderFeatured(sampleApps[1]);
+  assert.match(html, /Open Tube/);
+  assert.match(html, /app\/open-tube\//);
+  assert.match(html, /Featured/i);
+});
+
+test('renderStore includes search, category chips and a view toggle', () => {
+  const html = renderStore(sampleApps);
+  assert.match(html, /id="store-search"/);
+  assert.match(html, /data-category="Games"/);
+  assert.match(html, /data-category="Media"/);
+  assert.match(html, /data-view="list"/);
+  assert.match(html, /data-view="grid"/);
+  assert.match(html, /class="featured"/);
+});
+
+test('renderAppPage shows stats badges, tags and a lightbox hook', () => {
+  const html = renderAppPage(sampleApps[1]);
+  assert.match(html, /4\.8/);
+  assert.match(html, /38K\+/);
+  assert.match(html, /data-shot="https:\/\/example\.com\/ot-1\.png"/);
+  assert.match(html, /class="tag"/);
+  assert.match(html, /Oct 2, 2026/);
+});
+
+test('renderAppPage shows a placeholder when there are no screenshots', () => {
+  const html = renderAppPage({ ...sampleApps[1], screenshots: [] });
+  assert.match(html, /gallery-note/);
+  assert.doesNotMatch(html, /data-shot/);
+});
+
